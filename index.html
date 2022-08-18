@@ -7,12 +7,16 @@
     <title>Canvas</title>
 </head>
 <body>
-    <canvas id="mycanvas" width="1000" height="1000" >Hola tu navegador no funca</canvas>
+    <canvas  id="mycanvas" width="1000" height="1000" >Hola tu navegador no funca</canvas>
     <img id="img" src="./resources/images.jpg" alt="" style="display: none;">
 
     <script>
         var cv = document.getElementById('mycanvas');
         var ctx = cv.getContext('2d');
+
+        var fig = "arc";
+        var pressed = false;
+        var super_x = 0, super_y = 0;
         /*
         
         ctx.fillStyle= "rgb(123, 174, 197)";
@@ -83,11 +87,11 @@
         ctx.fillStyle = grd;
         ctx.fillRect(0, 0, 200, 200);
         
-        //images
         
+        //images
         var img = document.getElementById("img");
         ctx.drawImage(img, 0, 0);
-        */
+        
         //eventos
         function getColor(){
             let r = Math.floor(Math.random() * 256);
@@ -95,20 +99,23 @@
             let b = Math.floor(Math.random() * 256);
             return `rgb(${r}, ${g}, ${b}, .5)`;
         }
-        var color = getColor(); 
+        var color = getColor();
         cv.addEventListener('click', function(e){
-            
-            console.log(color);
-            ctx.beginPath();
-            ctx.arc(e.offsetX, e.offsetY, 50, 0, 2 * Math.PI);
-            ctx.stroke();
-            ctx.fillStyle = color;
-            ctx.fill();
+            if(fig=="arc"){
+                ctx.beginPath();
+                ctx.arc(e.offsetX, e.offsetY, 50, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+            else{
+                ctx.fillStyle= color;
+                ctx.fillRect(e.offsetX-25, e.offsetY-25, 55, 50);
+                ctx.strokeRect(e.offsetX-25, e.offsetY-25, 55, 50);
+            }
         });
         
        cv.addEventListener("mouseover", function(e){
-            
-            console.log(e)
             color = getColor();
             ctx.beginPath();
             ctx.fillStyle = color;
@@ -116,7 +123,54 @@
             
        });
         
-     
+       cv.addEventListener("mouseout", (e) => {
+            fig = fig == "arc" ? "rec" : "arc";
+       });
+
+       cv.addEventListener("mousemove", (e) => {
+        if(pressed){
+            ctx.fillStyle= "black";
+            ctx.fillRect(e.offsetX-2.5, e.offsetY-2.5, 5, 5);
+        }
+       });
+
+       cv.addEventListener("mouseup", (e) =>{
+        pressed = false;
+       });
+
+       cv.addEventListener("mousedown", (e) =>{
+        pressed = true;
+       });
+       */
+
+       document.addEventListener("keydown", (e) => {
+            console.log(e);
+            //up
+            if(e.keyCode == 87 || e.keyCode == 38){
+                super_y -= 10;
+            }
+            //down
+            if(e.keyCode == 83 || e.keyCode == 40){
+                super_y += 10;
+            }
+            //left
+            if(e.keyCode == 65 || e.keyCode == 37){
+                super_x -= 10;
+            }
+            //rigth
+            if(e.keyCode == 68 || e.keyCode == 39){
+                super_x += 10;
+            }
+
+            paint();
+       })
+       function paint(){
+        ctx.fillStyle= "white";
+        ctx.fillRect(0,0, 1000,1000);
+
+        ctx.fillStyle = "red";
+        ctx.fillRect(super_x, super_y, 40,40);
+       }
     </script>
 </body>
 </html>
