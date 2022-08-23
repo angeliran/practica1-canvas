@@ -7,16 +7,41 @@
     <title>Canvas</title>
 </head>
 <body>
-    <canvas  id="mycanvas" width="1000" height="1000" >Hola tu navegador no funca</canvas>
-    <img id="img" src="./resources/images.jpg" alt="" style="display: none;">
-
+    <div style="display: flex; width: 900px; border: 5px solid black; padding-right: 20px;">
+        <canvas  id="mycanvas" width="800" height="800" >Hola tu navegador no funca</canvas>
+        <img id="img" src="./resources/images.jpg" alt="" style="display: none;">
+        <div style="width: 100%">
+            <button id="borrar_todo" style="width: 100%; height: 50px; margin: 5px;">Borrar todo</button>
+            <button id="borrador" style="width: 100%; height: 50px; margin: 5px;">Borrador</button>
+            <button id="lapiz" style="width: 100%; height: 50px; margin: 5px;">Lapiz</button>
+            <button id="cuadrado" style="width: 100%; height: 50px; margin: 5px;">Cuadrado</button>
+            <button id="circulo" style="width: 100%; height: 50px; margin: 5px;">Circulo</button>
+            <button id="triangulo" style="width: 100%; height: 50px; margin: 5px;">Triangulo</button>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr);
+            grid-gap: 5px;">
+                <button id="black" style="background-color: black;width: 100%; height: 50px; margin: 5px;"></button>
+                <button id="red" style="background-color: red; width: 100%; height: 50px; margin: 5px;"></button>
+                <button id="yellow" style="background-color: yellow;width: 100%; height: 50px; margin: 5px;"></button>
+                <button id="brown" style="background-color: rgba(159, 67, 67, 0.899);width: 100%; height: 50px; margin: 5px;"></button>
+                <button id="beige" style="background-color: rgb(245, 245, 173);width: 100%; height: 50px; margin: 5px;"></button>
+                <button id="blue" style="background-color: rgb(74, 174, 255);width: 100%; height: 50px; margin: 5px;"></button>
+            </div>
+            <div style="display: row; width: 100%; margin-left: 5px">
+                <button id="resta" style="width: 20px;">-</button>
+                <input id="valor" type="text" style="width: 40px;" disabled>
+                <button id="suma">+</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         var cv = document.getElementById('mycanvas');
         var ctx = cv.getContext('2d');
 
-        var fig = "arc";
+        var fig = "util";
         var pressed = false;
         var super_x = 0, super_y = 0;
+        var tam = 0;
         /*
         
         ctx.fillStyle= "rgb(123, 174, 197)";
@@ -100,21 +125,32 @@
             return `rgb(${r}, ${g}, ${b}, .5)`;
         }
         var color = getColor();
+        */
         cv.addEventListener('click', function(e){
-            if(fig=="arc"){
+            if(fig==="arc"){
+                console.log(fig);
                 ctx.beginPath();
-                ctx.arc(e.offsetX, e.offsetY, 50, 0, 2 * Math.PI);
-                ctx.stroke();
+                ctx.arc(e.offsetX, e.offsetY, tam, 0, 2 * Math.PI);
                 ctx.fillStyle = color;
                 ctx.fill();
             }
-            else{
+            else if(fig == "cuadrado"){
                 ctx.fillStyle= color;
-                ctx.fillRect(e.offsetX-25, e.offsetY-25, 55, 50);
-                ctx.strokeRect(e.offsetX-25, e.offsetY-25, 55, 50);
+                ctx.fillRect(e.offsetX-(tam/2), e.offsetY-(tam/2), tam, tam);
+               
             }
+            else if(fig == "triangulo"){
+                console.log(e.offsetX-tam, e.offsetY);
+                ctx.beginPath();
+                ctx.moveTo(e.offsetX-tam, e.offsetY);
+                ctx.lineTo(e.offsetX+tam, e.offsetY-(tam + (tam/2)));
+                ctx.lineTo(e.offsetX+tam*3, e.offsetY);
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+            
         });
-        
+        /*
        cv.addEventListener("mouseover", function(e){
             color = getColor();
             ctx.beginPath();
@@ -122,27 +158,120 @@
             ctx.fill();
             
        });
-        
        cv.addEventListener("mouseout", (e) => {
-            fig = fig == "arc" ? "rec" : "arc";
+           fig = fig == "arc" ? "rec" : "arc";
+        });
+        
+        */
+       //variables
+       var color = "black";
+       var tam = 5;
+        
+       //borrar todo
+       document.getElementById('borrar_todo').addEventListener("click", (e) =>{
+        color = "white";
+        ctx.fillStyle = color;
+        ctx.fillRect(0,0, 800,800);
+        color = "black";
+        fig = "util";
        });
 
-       cv.addEventListener("mousemove", (e) => {
-        if(pressed){
-            ctx.fillStyle= "black";
-            ctx.fillRect(e.offsetX-2.5, e.offsetY-2.5, 5, 5);
+       //borrador
+       document.getElementById('borrador').addEventListener("click", (e) => {
+        color = "white";
+        fig = "util";
+       });
+
+       //lapiz
+       document.getElementById('lapiz').addEventListener("click", (e) => {
+        tam = 5;
+        fig = "util";
+        document.getElementById('valor').value = tam;
+       });
+
+       //cuadrado
+       document.getElementById('cuadrado').addEventListener("click", (e) => {
+         fig = "cuadrado";
+       });
+
+        //circulo
+        document.getElementById('circulo').addEventListener("click", (e) => {
+         fig = "arc";
+       });
+
+       //triangulo
+       document.getElementById('triangulo').addEventListener("click", (e) => {
+         fig = "triangulo";
+       });
+
+       //colores
+       document.getElementById('black').addEventListener("click", (e) => {
+        color = "black";
+       
+       });
+
+       document.getElementById('red').addEventListener("click", (e) => {
+        color = "red";
+        
+       });
+
+       document.getElementById('yellow').addEventListener("click", (e) => {
+        color = "yellow";
+        
+       })
+
+       document.getElementById('brown').addEventListener("click", (e) => {
+        color = "brown";
+        
+       })
+
+       document.getElementById('beige').addEventListener("click", (e) => {
+        color = "beige";
+        
+       })
+
+       document.getElementById('blue').addEventListener("click", (e) => {
+        color = "blue";
+        
+       })
+
+       //tamaños
+       document.getElementById('suma').addEventListener("click", (e) =>{
+        tam++;
+        document.getElementById('valor').value = tam;
+       });
+
+       document.getElementById('resta').addEventListener("click", (e) =>{
+        if(tam>5){
+            tam--;
+            document.getElementById('valor').value = tam;
         }
        });
 
+       //valor input
+       document.getElementById('valor').value = tam;
+       //termina
+
+       cv.addEventListener("mousemove", (e) => {
+        if(pressed && fig == "util"){
+            ctx.fillStyle= color;
+            ctx.fillRect(e.offsetX-(tam/2), e.offsetY-(tam/2), tam, tam);
+        }
+       
+       });
+
        cv.addEventListener("mouseup", (e) =>{
+        
         pressed = false;
        });
 
        cv.addEventListener("mousedown", (e) =>{
         pressed = true;
        });
-       */
 
+       
+       
+/*
        document.addEventListener("keydown", (e) => {
             console.log(e);
             //up
@@ -170,7 +299,7 @@
 
         ctx.fillStyle = "red";
         ctx.fillRect(super_x, super_y, 40,40);
-       }
+       }*/
     </script>
 </body>
 </html>
