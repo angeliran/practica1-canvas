@@ -7,7 +7,7 @@
     <title>Canvas</title>
 </head>
 <body>
-    <div style="display: flex; width: 800px; border: 5px solid black; padding-right: 20px;">
+    <div style="display: flex; width: 800px; border: 5px solid black;">
         <canvas  id="mycanvas" width="800" height="800" >Hola tu navegador no funca</canvas>
         <img id="img" src="./resources/images.jpg" alt="" style="display: none;">
         
@@ -16,52 +16,115 @@
     <script>
         var cv = "null"
         var ctx = "null"
-
+        var player1 = null;
+        var player2 = null;
         var fig = "util";
         var pressed = false;
         var super_x = 0, super_y = 0;
-        var tam = 0;
+        var score = 0;
+        var direccion = "rigth";
+        var speed = 5;
 
         function run(){
              cv = document.getElementById('mycanvas');
              ctx = cv.getContext('2d');
-
+            player1 = new Cuadro(0,0,40,40,"black");
+            player2 = new Cuadro(200,0,40,40, "red");
              paint();
         }
         document.addEventListener("keydown", (e) => {
             
             //up
             if(e.keyCode == 87 || e.keyCode == 38){
-                super_y -= 10;
+                //player1.y -= 5;
+                direccion = "up";
             }
             //down
             if(e.keyCode == 83 || e.keyCode == 40){
-                super_y += 10;
+                //player1.y += 5;
+                direccion = "down";
             }
             //left
             if(e.keyCode == 65 || e.keyCode == 37){
-                super_x -= 10;
+                //player1.x -= 5;
+                direccion = "left";
             }
             //rigth
             if(e.keyCode == 68 || e.keyCode == 39){
-                super_x += 10;
+                //player1.x += 5;
+                direccion = "rigth";
             }
 
-            paint();
        })
        function paint(){
-
         window.requestAnimationFrame(paint);
         ctx.fillStyle= "white";
-        ctx.fillRect(0,0, 1000,1000);
+        ctx.fillRect(0,0, 800,800);
 
-        ctx.fillStyle = "red";
-        ctx.fillRect(super_x, super_y, 40,40);
-        super_x += 1;
-        if(super_x >800){
-            super_x = 0;
+        player1.pintar(ctx);
+        
+       
+        player2.pintar(ctx);
+        update();
+        ctx.fillStyle = "black";
+        ctx.fillText("SCORE:"+score,10,20);
+       };
+
+       function update(){
+            if(direccion == "up"){
+                player1.y -= speed;
+            }
+            if(direccion == "down"){
+                player1.y += speed;
+            }
+            if(direccion == "left"){
+                player1.x -= speed;
+            }
+            if(direccion == "rigth"){
+                player1.x += speed;
+            }
+
+            if(player1.se_tocan(player2)){
+            player2.x =Math.floor(Math.random() * 801);
+            player2.y =Math.floor(Math.random() * 801);
+            score+=10;
+            speed +=2;
+           
+            }
+           
+            if(player1.x >800 ){
+            player1.x = 0;
         }
        }
+       function Cuadro(x,y,w,h,c){
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.c = c;
+
+            this.se_tocan = function (target) { 
+
+                if(this.x < target.x + target.w &&
+
+                this.x + this.w > target.x && 
+
+                this.y < target.y + target.h && 
+
+                this.y + this.h > target.y){
+
+        
+                    return true;
+
+                }
+
+                };
+            this.pintar = function(ctx){
+                ctx.fillStyle = this.c;
+                ctx.fillRect(this.x, this.y, this.w, this.h);
+                ctx.strokeRect(this.x, this.y, this.w, this.h);
+            }
+        };
 
         window.requestAnimationFrame = (function () {
             return window.requestAnimationFrame ||
