@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+</head>
+<body>
+    <div style="display: flex; width: 800px; border: 5px solid black; padding-right: 20px;">
+        <canvas  id="mycanvas" width="800" height="800" >Hola tu navegador no funca</canvas>
+        <img id="img" src="./resources/images.jpg" alt="" style="display: none;">
+        
+    </div>
+    
+    <script>
+        var cv = "null"
+        var ctx = "null"
+
+        var fig = "util";
+        var pressed = false;
+        var super_x = 0, super_y = 0;
+        var tam = 0;
+
+        function run(){
+             cv = document.getElementById('mycanvas');
+             ctx = cv.getContext('2d');
+
+             paint();
+        }
+        document.addEventListener("keydown", (e) => {
+            
+            //up
+            if(e.keyCode == 87 || e.keyCode == 38){
+                super_y -= 10;
+            }
+            //down
+            if(e.keyCode == 83 || e.keyCode == 40){
+                super_y += 10;
+            }
+            //left
+            if(e.keyCode == 65 || e.keyCode == 37){
+                super_x -= 10;
+            }
+            //rigth
+            if(e.keyCode == 68 || e.keyCode == 39){
+                super_x += 10;
+            }
+
+            paint();
+       })
+       function paint(){
+
+        window.requestAnimationFrame(paint);
+        ctx.fillStyle= "white";
+        ctx.fillRect(0,0, 1000,1000);
+
+        ctx.fillStyle = "red";
+        ctx.fillRect(super_x, super_y, 40,40);
+        super_x += 1;
+        if(super_x >800){
+            super_x = 0;
+        }
+       }
+
+        window.requestAnimationFrame = (function () {
+            return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                function (callback) {
+                    window.setTimeout(callback, 17);
+                };
+        }());
+        
+        window.addEventListener('load', run, false);
+        
+    </script>
+</body>
+</html>
